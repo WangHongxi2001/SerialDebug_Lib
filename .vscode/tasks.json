@@ -1,0 +1,15 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "build",                              // build任务
+                "type": "shell",
+                "command": "make",                             // 命令, 根据makefile编译代码并生成elf调试文件和hex文件
+                "args": [                                      // 参数
+                    "-j4"              // 四线程编译
+                ]
+            }
+        ]
+}

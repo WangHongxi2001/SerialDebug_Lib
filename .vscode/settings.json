@@ -1,0 +1,25 @@
+{
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        "stm32f4xx_hal.h": "c",
+        "usart.h": "c",
+        "can.h": "c",
+        "main.h": "c",
+        "includes.h": "c",
+        "stm32f4xx_hal_conf.h": "c",
+        "stm32f4xx_hal_rcc.h": "c",
+        "stm32f4xx_hal_def.h": "c",
+        "stdio.h": "c",
+        "stm32f4xx.h": "c",
+        "dma.h": "c",
+        "gpio.h": "c",
+        "stm32f427xx.h": "c",
+        "DataScope_DP.C": "cpp",
+        "serialdebug.h": "c"
+    },
+    "files.encoding": "gb2312",
+    "C_Cpp.errorSquiggles": "Disabled",
+    "editor.detectIndentation": false,
+    "editor.tabCompletion": "on",
+    "editor.formatOnSave": true,
+}
