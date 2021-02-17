@@ -80,7 +80,7 @@ void Debug_Buf_Generate(UART_HandleTypeDef *huart, float a, float b, float c, fl
             data[position++] = '0';
             data[position++] = '.';
             data[position++] = '0';
-            data[position++] = _float_rounding(buffer[cnt] * 100) % 10 + '0';
+            data[position++] = _float_rounding(-buffer[cnt] * 100) % 10 + '0';
             data[position++] = ',';
             continue;
         }
