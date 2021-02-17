@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file	 SerialChart.c
   * @author  Hongxi Wong
-  * @version V1.0.0
-  * @date    2019/12/18
+  * @version V1.0.1
+  * @date    2020/2/17
   * @brief   UWP Serial debug assistant lib based on HAL
   ******************************************************************************
   * @attention
@@ -19,7 +19,7 @@ uint8_t position = 0;
 uint8_t Debug_Count = 0;
 uint8_t Debug_Period = 10;
 
-void Serial_Debug(UART_HandleTypeDef *huart, uint8_t debug_period, float a, float b, float c, float d, float e, float f)
+void Serial_Debug(UART_HandleTypeDef *huart, uint16_t debug_period, float a, float b, float c, float d, float e, float f)
 {
     if (debug_period == 0)
         return;
@@ -36,12 +36,54 @@ void Debug_Buf_Send(UART_HandleTypeDef *huart, uint8_t *data, uint8_t length)
     HAL_UART_Transmit_DMA(huart, data, length);
 }
 
+static int _float_rounding(float raw)
+{
+    static int integer;
+    static float decimal;
+    integer = (int)raw;
+    decimal = raw - integer;
+    if (decimal >= 0.5f)
+        integer++;
+    return integer;
+}
+
 void Debug_Buf_Generate(UART_HandleTypeDef *huart, float a, float b, float c, float d, float e, float f, uint8_t *data)
 {
     uint8_t position = 0;
     float buffer[6] = {a, b, c, d, e, f};
     for (uint8_t cnt = 0; cnt < 6; cnt++)
     {
+        if (buffer[cnt] > -0.01f && buffer[cnt] < 0.01f)
+        {
+            data[position++] = cnt + 'a';
+            data[position++] = '=';
+            data[position++] = '0';
+            data[position++] = ',';
+            continue;
+        }
+        if (buffer[cnt] > 0.0f && buffer[cnt] < 0.1f)
+        {
+            data[position++] = cnt + 'a';
+            data[position++] = '=';
+            data[position++] = '0';
+            data[position++] = '.';
+            data[position++] = '0';
+            data[position++] = _float_rounding(buffer[cnt] * 100) % 10 + '0';
+            data[position++] = ',';
+            continue;
+        }
+        if (buffer[cnt] > -0.1f && buffer[cnt] < 0.0f)
+        {
+            data[position++] = cnt + 'a';
+            data[position++] = '=';
+            data[position++] = '-';
+            data[position++] = '0';
+            data[position++] = '.';
+            data[position++] = '0';
+            data[position++] = _float_rounding(buffer[cnt] * 100) % 10 + '0';
+            data[position++] = ',';
+            continue;
+        }
         float2char(buffer[cnt], data, cnt, &position);
     }
     data[position - 1] = '\n';
@@ -53,12 +95,12 @@ void float2char(float floatdata, uint8_t *buffer, uint8_t n, uint8_t *position) 
     int32_t slope;
     int32_t temp;
     int8_t i, j;
-    slope = (int32_t)(floatdata * 100);
+    slope = _float_rounding(floatdata * 100);
     buffer[*position] = n + 'a';
     *position += 1;
     buffer[*position] = '=';
     *position += 1;
-    if (slope <= 0) //判断是否大于0
+    if (slope < 0) //判断是否大于0
     {
         buffer[*position] = '-';
         slope = -slope;
