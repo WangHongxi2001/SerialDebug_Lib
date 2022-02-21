@@ -17,7 +17,6 @@ float a,b,c,d,e,f;
 
 int main()
 {
-
     Serial_Debug(&huart2, 5, a,b,c,d,e,f);
 
     system("pause");
